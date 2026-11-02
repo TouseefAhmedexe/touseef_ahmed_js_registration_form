@@ -23,7 +23,7 @@
 
             <p>Fields marked with * are required. This page has no server, so the form does not send your answers anywhere.</p>
 
-            <form id="registration-form">
+            <form id="registration-form" novalidate>
 
                 <fieldset>
                     <legend>Account details</legend>
@@ -31,19 +31,19 @@
                     <div class="field">
                         <label for="full-name">Full name *</label>
                         <input type="text" id="full-name" name="full_name" placeholder="Enter your full name" autocomplete="name" minlength="3" maxlength="50" pattern="[A-Za-z ]+" data-label="Full name" data-pattern-message="Use letters and spaces only." required>
-                        <p class="field-error"></p>
+                        <p class="field-error" aria-live="polite"></p>
                     </div>
 
                     <div class="field">
                         <label for="email-address">Email address *</label>
                         <input type="email" id="email-address" name="email_address" placeholder="example@gmail.com" autocomplete="email" data-label="Email address" required>
-                        <p class="field-error"></p>
+                        <p class="field-error" aria-live="polite"></p>
                     </div>
 
                     <div class="field">
                         <label for="phone-number">Phone number (optional)</label>
                         <input type="tel" id="phone-number" name="phone_number" placeholder="03001234567" autocomplete="tel" maxlength="11" pattern="[0-9]{11}" data-label="Phone number" data-pattern-message="Enter exactly 11 digits, for example 03001234567.">
-                        <p class="field-error"></p>
+                        <p class="field-error" aria-live="polite"></p>
                     </div>
 
                     <div class="field">
@@ -51,15 +51,15 @@
                         <input type="password" id="password" name="password" placeholder="Create a password" autocomplete="new-password" minlength="8" maxlength="30" pattern="(?=.*[A-Za-z])(?=.*[0-9]).*" data-label="Password" data-pattern-message="Use at least one letter and one number." required>
                         <div class="strength">
                             <meter id="strength-meter" min="0" max="5" low="2" high="4" optimum="5" value="0">0 out of 5</meter>
-                            <span id="strength-text"></span>
+                            <span id="strength-text" aria-live="polite"></span>
                         </div>
-                        <p class="field-error"></p>
+                        <p class="field-error" aria-live="polite"></p>
                     </div>
 
                     <div class="field">
                         <label for="confirm-password">Confirm password *</label>
                         <input type="password" id="confirm-password" name="confirm_password" placeholder="Type the password again" autocomplete="new-password" data-label="Confirm password" required>
-                        <p class="field-error"></p>
+                        <p class="field-error" aria-live="polite"></p>
                     </div>
                 </fieldset>
 
@@ -75,13 +75,13 @@
                             <option value="devops">DevOps Intern</option>
                             <option value="data-analysis">Data Analysis Intern</option>
                         </select>
-                        <p class="field-error"></p>
+                        <p class="field-error" aria-live="polite"></p>
                     </div>
 
                     <div class="field">
                         <label for="start-date">Available start date *</label>
                         <input type="date" id="start-date" name="start_date" min="2026-11-16" max="2027-03-31" data-label="Start date" required>
-                        <p class="field-error"></p>
+                        <p class="field-error" aria-live="polite"></p>
                     </div>
                 </fieldset>
 
@@ -123,10 +123,10 @@
                         </div>
                     </div>
 
-                    <p class="field-error" id="interests-error"></p>
+                    <p class="field-error" id="interests-error" aria-live="polite"></p>
 
                     <h3>Selected interests</h3>
-                    <p class="selected-note" id="selected-note"></p>
+                    <p class="selected-note" id="selected-note" aria-live="polite"></p>
                     <ul class="chip-list" id="selected-list"></ul>
                 </fieldset>
 
@@ -136,18 +136,18 @@
                     <div class="field">
                         <label for="about-text">Why do you want to join? *</label>
                         <textarea id="about-text" name="about_text" rows="5" cols="40" placeholder="Write at least 20 characters" minlength="20" maxlength="200" data-label="This answer" required></textarea>
-                        <p class="counter" id="about-counter"></p>
-                        <p class="field-error"></p>
+                        <p class="counter" id="about-counter" aria-live="polite"></p>
+                        <p class="field-error" aria-live="polite"></p>
                     </div>
 
                     <div class="field field--check">
                         <input type="checkbox" id="terms-accepted" name="terms" value="accepted" data-label="Confirmation" data-required-message="Tick the box to confirm your answers." required>
                         <label for="terms-accepted">I confirm that my answers are correct *</label>
-                        <p class="field-error"></p>
+                        <p class="field-error" aria-live="polite"></p>
                     </div>
                 </fieldset>
 
-                <p class="form-status" id="form-status"></p>
+                <p class="form-status" id="form-status" aria-live="polite"></p>
 
                 <div class="button-row">
                     <button class="button" type="submit" id="submit-button" disabled>Submit registration</button>
@@ -155,7 +155,7 @@
                 </div>
             </form>
 
-            <div class="message message--success" id="success-box" tabindex="-1" hidden>
+            <div class="message message--success" id="success-box" tabindex="-1" aria-live="polite" hidden>
                 <p id="success-text"></p>
                 <p id="success-countdown"></p>
             </div>
@@ -167,23 +167,23 @@
             <h2>Additional Information</h2>
 
             <div class="tabs">
-                <div class="tab-list">
-                    <button type="button" class="tab tab--active" data-tab="program">Program</button>
-                    <button type="button" class="tab" data-tab="schedule">Schedule</button>
-                    <button type="button" class="tab" data-tab="requirements">Requirements</button>
+                <div class="tab-list" role="tablist" aria-label="Additional Information Tabs">
+                    <button type="button" class="tab tab--active" id="tab-program" role="tab" aria-selected="true" aria-controls="panel-program" tabindex="0" data-tab="program">Program</button>
+                    <button type="button" class="tab" id="tab-schedule" role="tab" aria-selected="false" aria-controls="panel-schedule" tabindex="-1" data-tab="schedule">Schedule</button>
+                    <button type="button" class="tab" id="tab-requirements" role="tab" aria-selected="false" aria-controls="panel-requirements" tabindex="-1" data-tab="requirements">Requirements</button>
                 </div>
 
-                <div class="tab-panel" data-panel="program">
+                <div class="tab-panel" id="panel-program" role="tabpanel" aria-labelledby="tab-program" data-panel="program">
                     <h3>Program</h3>
                     <p>The internship teaches HTML, CSS and JavaScript through daily tasks. Every task ends with an assignment that is saved in a public GitHub repository.</p>
                 </div>
 
-                <div class="tab-panel" data-panel="schedule" hidden>
+                <div class="tab-panel" id="panel-schedule" role="tabpanel" aria-labelledby="tab-schedule" data-panel="schedule" hidden>
                     <h3>Schedule</h3>
                     <p>The start date you choose in the form must be between 16 November 2026 and 31 March 2027.</p>
                 </div>
 
-                <div class="tab-panel" data-panel="requirements" hidden>
+                <div class="tab-panel" id="panel-requirements" role="tabpanel" aria-labelledby="tab-requirements" data-panel="requirements" hidden>
                     <h3>Requirements</h3>
                     <ul>
                         <li>A computer with a web browser</li>

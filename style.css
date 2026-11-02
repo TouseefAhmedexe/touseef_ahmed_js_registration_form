@@ -24,7 +24,7 @@
 }
 
 [hidden] {
-    display: none;
+    display: none !important;
 }
 
 body {
@@ -100,7 +100,6 @@ main {
     margin-bottom: var(--space-md);
     padding-bottom: var(--space-sm);
 }
-
 
 fieldset {
     border: 2px solid var(--color-primary);
@@ -228,7 +227,6 @@ input[type="checkbox"] {
     display: flex;
     gap: var(--space-sm);
 }
-
 
 .strength {
     align-items: center;
@@ -403,7 +401,6 @@ input[type="checkbox"] {
     border-left-color: var(--color-success);
 }
 
-
 .tab-list {
     border-bottom: 2px solid var(--color-border);
     display: flex;
@@ -496,12 +493,10 @@ input[type="checkbox"] {
 }
 
 @media (prefers-reduced-motion: reduce) {
-
     *,
     *::before,
     *::after {
-        animation: none;
-        transition: none;
+        animation: none !important;
+        transition: none !important;
     }
 }
-
