@@ -9,6 +9,8 @@ const fields = form.querySelectorAll("[data-label]");
 function refreshAll() {
     updatePasswordStrength();
     updateCounter();
+    syncPasswordMatch();
+    updateSubmitState();
 }
 
 document.addEventListener("DOMContentLoaded", refreshAll);
@@ -74,3 +76,42 @@ function updateCounter() {
 }
 
 aboutField.addEventListener("input", updateCounter);
+
+
+const confirmField = document.getElementById("confirm-password");
+
+function pluralize(count, word) {
+    return `${count} ${word}${count === 1 ? "" : "s"}`;
+}
+
+function syncPasswordMatch() {
+    const mismatch = confirmField.value !== passwordField.value;
+
+    confirmField.setCustomValidity(mismatch ? "The passwords do not match." : "");
+}
+
+function getInvalidFields() {
+    return [...form.elements].filter((element) => element.willValidate && !element.validity.valid);
+}
+
+function updateSubmitState() {
+    const invalidCount = getInvalidFields().length;
+    const isReady = invalidCount === 0;
+
+    submitButton.disabled = !isReady;
+    formStatus.className = isReady ? "form-status form-status--ready" : "form-status";
+    formStatus.textContent = isReady
+        ? "Everything looks good. You can submit the form."
+        : `${pluralize(invalidCount, "answer")} ${invalidCount === 1 ? "needs" : "need"} attention before you can submit.`;
+}
+
+function handleFormInput(event) {
+    if (event.target === passwordField || event.target === confirmField) {
+        syncPasswordMatch();
+    }
+
+    updateSubmitState();
+}
+
+form.addEventListener("input", handleFormInput);
+
