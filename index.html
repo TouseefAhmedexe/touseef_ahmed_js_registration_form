@@ -127,7 +127,36 @@
                     <p class="selected-note" id="selected-note"></p>
                     <ul class="chip-list" id="selected-list"></ul>
                 </fieldset>
+
+                <fieldset>
+                    <legend>About you</legend>
+
+                    <div class="field">
+                        <label for="about-text">Why do you want to join? *</label>
+                        <textarea id="about-text" name="about_text" rows="5" cols="40" placeholder="Write at least 20 characters" minlength="20" maxlength="200" data-label="This answer" required></textarea>
+                        <p class="counter" id="about-counter"></p>
+                        <p class="field-error"></p>
+                    </div>
+
+                    <div class="field field--check">
+                        <input type="checkbox" id="terms-accepted" name="terms" value="accepted" data-label="Confirmation" data-required-message="Tick the box to confirm your answers." required>
+                        <label for="terms-accepted">I confirm that my answers are correct *</label>
+                        <p class="field-error"></p>
+                    </div>
+                </fieldset>
+
+                <p class="form-status" id="form-status"></p>
+
+                <div class="button-row">
+                    <button class="button" type="submit" id="submit-button" disabled>Submit registration</button>
+                    <button class="button button--secondary" type="button" id="reset-button">Reset form</button>
+                </div>
             </form>
+
+            <div class="message message--success" id="success-box" tabindex="-1" hidden>
+                <p id="success-text"></p>
+                <p id="success-countdown"></p>
+            </div>
         </section>
 
         <hr>
