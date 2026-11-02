@@ -10,6 +10,8 @@ function refreshAll() {
     updatePasswordStrength();
     updateCounter();
     syncPasswordMatch();
+    syncInterests();
+    renderSelectedList();
     updateSubmitState();
 }
 
@@ -175,4 +177,81 @@ function handleFieldBlur(event) {
 
 form.addEventListener("input", showLiveMessages);
 form.addEventListener("blur", handleFieldBlur, true);
+
+
+const interestsGroup = document.getElementById("interests-group");
+const interestBoxes = [...form.querySelectorAll("[name='interests']")];
+const interestsError = document.getElementById("interests-error");
+const selectedList = document.getElementById("selected-list");
+const selectedNote = document.getElementById("selected-note");
+
+const getSelectedInterests = () => interestBoxes.filter((box) => box.checked).map((box) => box.value);
+
+function buildChip(interest) {
+    const item = document.createElement("li");
+    const label = document.createElement("span");
+    const removeButton = document.createElement("button");
+
+    item.className = "chip";
+    label.textContent = interest;
+
+    removeButton.type = "button";
+    removeButton.className = "chip-remove";
+    removeButton.textContent = "Remove";
+    removeButton.dataset.value = interest;
+    removeButton.setAttribute("title", `Remove ${interest}`);
+
+    item.append(label, removeButton);
+    return item;
+}
+
+function renderSelectedList() {
+    const selected = getSelectedInterests();
+
+    selectedList.innerHTML = "";
+    selected.forEach((interest) => selectedList.append(buildChip(interest)));
+    selectedNote.textContent = selected.length === 0
+        ? "No interests selected yet."
+        : `${pluralize(selected.length, "interest")} selected.`;
+}
+
+function syncInterests() {
+    const message = getSelectedInterests().length === 0 ? "Choose at least one interest." : "";
+
+    interestBoxes[0].setCustomValidity(message);
+}
+
+function showInterestsError() {
+    const message = interestsGroup.dataset.touched === "true" ? interestBoxes[0].validationMessage : "";
+
+    interestsError.textContent = message;
+    interestsGroup.classList.toggle("group--invalid", message !== "");
+}
+
+function handleInterestsInput() {
+    interestsGroup.dataset.touched = "true";
+    syncInterests();
+    renderSelectedList();
+    showInterestsError();
+}
+
+function handleChipClick(event) {
+    const removeButton = event.target.closest("[data-value]");
+
+    if (removeButton === null) {
+        return;
+    }
+
+    const box = interestBoxes.find((item) => item.value === removeButton.dataset.value);
+
+    box.checked = false;
+    handleInterestsInput();
+    updateSubmitState();
+    box.focus();
+}
+
+interestsGroup.addEventListener("input", handleInterestsInput);
+selectedList.addEventListener("click", handleChipClick);
+
+
 
