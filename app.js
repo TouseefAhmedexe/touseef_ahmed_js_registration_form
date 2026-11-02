@@ -115,3 +115,64 @@ function handleFormInput(event) {
 
 form.addEventListener("input", handleFormInput);
 
+
+function getErrorMessage(field) {
+    const { validity } = field;
+    const label = field.dataset.label;
+
+    if (validity.valid) {
+        return "";
+    }
+    if (validity.valueMissing) {
+        return field.dataset.requiredMessage ?? `${label} is required.`;
+    }
+    if (validity.typeMismatch) {
+        return `Enter a valid ${label.toLowerCase()}.`;
+    }
+    if (validity.tooShort) {
+        return `${label} must have at least ${field.minLength} characters.`;
+    }
+    if (validity.patternMismatch) {
+        return field.dataset.patternMessage ?? `${label} is not in the right format.`;
+    }
+    if (validity.rangeUnderflow || validity.rangeOverflow) {
+        return `${label} must be between ${field.min} and ${field.max}.`;
+    }
+
+    return field.validationMessage;
+}
+
+function validateField(field) {
+    const wrapper = field.closest(".field");
+    const errorBox = wrapper.querySelector(".field-error");
+    const message = getErrorMessage(field);
+
+    errorBox.textContent = message;
+    wrapper.classList.toggle("field--invalid", message !== "");
+    wrapper.classList.toggle("field--valid", message === "" && field.value !== "");
+}
+
+function showLiveMessages(event) {
+    const field = event.target;
+
+    if (field.dataset.touched === "true") {
+        validateField(field);
+    }
+
+    if (field === passwordField && confirmField.dataset.touched === "true") {
+        validateField(confirmField);
+    }
+}
+
+function handleFieldBlur(event) {
+    const field = event.target;
+
+    if (field.matches("[data-label]")) {
+        field.dataset.touched = "true";
+        validateField(field);
+    }
+}
+
+form.addEventListener("input", showLiveMessages);
+form.addEventListener("blur", handleFieldBlur, true);
+
