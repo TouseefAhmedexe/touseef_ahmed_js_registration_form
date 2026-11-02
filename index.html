@@ -61,6 +61,27 @@
                     </div>
                 </fieldset>
 
+                <fieldset>
+                    <legend>Application details</legend>
+
+                    <div class="field">
+                        <label for="applied-position">Position *</label>
+                        <select id="applied-position" name="applied_position" data-label="Position" required>
+                            <option value="" selected>-- Select a position --</option>
+                            <option value="web-development">Web Development Intern</option>
+                            <option value="software-testing">Software Testing Intern</option>
+                            <option value="devops">DevOps Intern</option>
+                            <option value="data-analysis">Data Analysis Intern</option>
+                        </select>
+                        <p class="field-error"></p>
+                    </div>
+
+                    <div class="field">
+                        <label for="start-date">Available start date *</label>
+                        <input type="date" id="start-date" name="start_date" min="2026-11-16" max="2027-03-31" data-label="Start date" required>
+                        <p class="field-error"></p>
+                    </div>
+                </fieldset>
             </form>
         </section>
 
