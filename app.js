@@ -8,6 +8,7 @@ const fields = form.querySelectorAll("[data-label]");
 
 function refreshAll() {
     updatePasswordStrength();
+    updateCounter();
 }
 
 document.addEventListener("DOMContentLoaded", refreshAll);
@@ -53,3 +54,23 @@ function updatePasswordStrength() {
 
 passwordField.addEventListener("input", updatePasswordStrength);
 
+
+const aboutField = document.getElementById("about-text");
+const aboutCounter = document.getElementById("about-counter");
+
+function updateCounter() {
+    const used = aboutField.value.length;
+    const remaining = aboutField.maxLength - used;
+    let note = "";
+
+    if (used < aboutField.minLength) {
+        note = ` At least ${aboutField.minLength - used} more needed.`;
+    } else if (remaining <= 20) {
+        note = ` Only ${remaining} left.`;
+    }
+
+    aboutCounter.textContent = `${used} of ${aboutField.maxLength} characters used.${note}`;
+    aboutCounter.classList.toggle("counter--warning", remaining <= 20);
+}
+
+aboutField.addEventListener("input", updateCounter);
