@@ -1,10 +1,16 @@
 "use strict";
 
+/**
+ * Registration Form Application Scope
+ * Encapsulated inside an IIFE to eliminate global namespace pollution.
+ */
 (() => {
+    // Application Constants
     const SEND_DELAY_MS = 1500;
     const COUNTDOWN_SECONDS = 6;
     const STRENGTH_LABELS = ["Very weak", "Weak", "Fair", "Good", "Strong", "Very strong"];
 
+    // DOM Elements
     const form = document.getElementById("registration-form");
     const submitButton = document.getElementById("submit-button");
     const resetButton = document.getElementById("reset-button");
@@ -30,19 +36,23 @@
     const successText = document.getElementById("success-text");
     const successCountdown = document.getElementById("success-countdown");
 
+    // State Variables
     let sendTimer = null;
     let countdownTimer = null;
     let activeModal = null;
     let lastFocusedElement = null;
     let disabledControls = [];
 
+    // Utility Helpers
     const pluralize = (count, word) => `${count} ${word}${count === 1 ? "" : "s"}`;
-
     const isLower = (c) => c >= "a" && c <= "z";
     const isUpper = (c) => c >= "A" && c <= "Z";
     const isDigit = (c) => c >= "0" && c <= "9";
     const isSymbol = (c) => !isLower(c) && !isUpper(c) && !isDigit(c);
 
+    /**
+     * Calculates password complexity score (0 to 5)
+     */
     function getPasswordScore(password) {
         const characters = [...password];
         const checks = [
@@ -55,6 +65,9 @@
         return checks.filter(Boolean).length;
     }
 
+    /**
+     * Updates password meter and screen reader announcement
+     */
     function updatePasswordStrength() {
         const password = passwordField.value;
         if (password === "") {
@@ -67,6 +80,9 @@
         strengthText.textContent = `Strength: ${STRENGTH_LABELS[score]} (${score} of 5 checks passed)`;
     }
 
+    /**
+     * Manages textarea character counter and warning thresholds
+     */
     function updateCounter() {
         const used = aboutField.value.length;
         const remaining = aboutField.maxLength - used;
@@ -82,12 +98,20 @@
         aboutCounter.classList.toggle("counter--warning", remaining <= 20);
     }
 
+    /**
+     * Checks password confirmation equality and updates validity
+     */
     function syncPasswordMatch() {
         const mismatch = confirmField.value !== passwordField.value;
         confirmField.setCustomValidity(mismatch ? "The passwords do not match." : "");
     }
 
+    /**
+     * Validates that text controls do not contain only whitespace.
+     * EXPLICIT FIX: Clears custom validity first to prevent sticky invalid states.
+     */
     function validateWhitespaceOnly(field) {
+        field.setCustomValidity(""); // Clear previous custom validity state explicitly
         if (field.hasAttribute("required") && field.type === "text") {
             if (field.value.trim() === "" && field.value.length > 0) {
                 field.setCustomValidity(`${field.dataset.label} cannot consist only of spaces.`);
@@ -97,6 +121,9 @@
         return true;
     }
 
+    /**
+     * Retrieves all invalid fields in the form
+     */
     function getInvalidFields() {
         return [...form.elements].filter((element) => {
             if (!element.willValidate) return false;
@@ -105,17 +132,22 @@
         });
     }
 
+    /**
+     * Updates form status text and readiness feedback
+     */
     function updateSubmitState() {
         const invalidCount = getInvalidFields().length;
         const isReady = invalidCount === 0;
 
-        submitButton.disabled = !isReady;
         formStatus.className = isReady ? "form-status form-status--ready" : "form-status";
         formStatus.textContent = isReady
             ? "Everything looks good. You can submit the form."
             : `${pluralize(invalidCount, "answer")} ${invalidCount === 1 ? "needs" : "need"} attention before you can submit.`;
     }
 
+    /**
+     * Maps validity state to human-readable error messages
+     */
     function getErrorMessage(field) {
         const { validity } = field;
         const label = field.dataset.label;
@@ -131,6 +163,9 @@
         return field.validationMessage;
     }
 
+    /**
+     * Validates a field, updates UI classes, aria-invalid attributes and error text
+     */
     function validateField(field) {
         const wrapper = field.closest(".field");
         if (!wrapper) return;
@@ -139,12 +174,20 @@
         const message = getErrorMessage(field);
 
         if (errorBox) errorBox.textContent = message;
-        wrapper.classList.toggle("field--invalid", message !== "");
-        wrapper.classList.toggle("field--valid", message === "" && field.value.trim() !== "");
+        
+        // Update ARIA accessibility state
+        const isInvalid = message !== "";
+        field.setAttribute("aria-invalid", isInvalid ? "true" : "false");
+
+        wrapper.classList.toggle("field--invalid", isInvalid);
+        wrapper.classList.toggle("field--valid", !isInvalid && field.value.trim() !== "");
     }
 
     const getSelectedInterests = () => interestBoxes.filter((box) => box.checked).map((box) => box.value);
 
+    /**
+     * Builds interactive interest chip with removal handler
+     */
     function buildChip(interest) {
         const item = document.createElement("li");
         const label = document.createElement("span");
@@ -163,6 +206,9 @@
         return item;
     }
 
+    /**
+     * Renders selected interest chips into DOM
+     */
     function renderSelectedList() {
         const selected = getSelectedInterests();
         selectedList.innerHTML = "";
@@ -172,17 +218,29 @@
             : `${pluralize(selected.length, "interest")} selected.`;
     }
 
+    /**
+     * Syncs interest checkboxes validity requirement
+     */
     function syncInterests() {
         const message = getSelectedInterests().length === 0 ? "Choose at least one interest." : "";
-        interestBoxes.forEach((box) => box.setCustomValidity(message));
+        if (interestBoxes.length > 0) {
+            interestBoxes.forEach((box) => box.setCustomValidity(message));
+        }
     }
 
+    /**
+     * Displays interest group validation state
+     */
     function showInterestsError() {
+        if (interestBoxes.length === 0) return;
         const message = interestsGroup.dataset.touched === "true" ? interestBoxes[0].validationMessage : "";
         interestsError.textContent = message;
         interestsGroup.classList.toggle("group--invalid", message !== "");
     }
 
+    /**
+     * Consolidated input event handler attached ONCE at form level
+     */
     function handleUnifiedFormInput(event) {
         const target = event.target;
 
@@ -211,6 +269,9 @@
         updateSubmitState();
     }
 
+    /**
+     * Field blur event handler to mark fields as touched
+     */
     function handleFieldBlur(event) {
         const field = event.target;
         if (field.matches("[data-label]")) {
@@ -219,6 +280,9 @@
         }
     }
 
+    /**
+     * Event delegation handler for removing interest chips
+     */
     function handleChipClick(event) {
         const removeButton = event.target.closest("[data-value]");
         if (!removeButton) return;
@@ -233,6 +297,9 @@
         }
     }
 
+    /**
+     * Full refresh of all calculated form components
+     */
     function refreshAll() {
         updatePasswordStrength();
         updateCounter();
@@ -242,6 +309,9 @@
         updateSubmitState();
     }
 
+    /**
+     * ARIA-Compliant Tab Pattern setup
+     */
     function setupTabs(tabs) {
         const tabList = tabs.querySelector("[role='tablist']");
         const tabButtons = [...tabList.querySelectorAll("[role='tab']")];
@@ -284,6 +354,9 @@
         });
     }
 
+    /**
+     * Controls form interactivity during simulation phase
+     */
     function setFormBusy(isBusy) {
         if (isBusy) {
             disabledControls = [...form.elements].filter((el) => !el.disabled);
@@ -294,16 +367,37 @@
         }
     }
 
+    /**
+     * Clears pending timers and resets success status container
+     */
     function clearMessages() {
         window.clearTimeout(sendTimer);
         window.clearInterval(countdownTimer);
+        const isCurrentlyVisible = !successBox.hidden;
         successBox.hidden = true;
         successText.textContent = "";
         successCountdown.textContent = "";
+
+        // Focus restoration after message dismissal
+        if (isCurrentlyVisible) {
+            document.getElementById("full-name").focus();
+        }
     }
 
+    /**
+     * Resets form controls and clears custom validity explicitly across all browsers
+     */
     function clearForm() {
         form.reset();
+
+        // Sweep all fields and explicitly clear custom validity
+        [...form.elements].forEach((element) => {
+            if (typeof element.setCustomValidity === "function") {
+                element.setCustomValidity("");
+            }
+            element.removeAttribute("aria-invalid");
+        });
+
         fields.forEach((field) => {
             const wrapper = field.closest(".field");
             field.removeAttribute("data-touched");
@@ -320,6 +414,9 @@
         refreshAll();
     }
 
+    /**
+     * Displays success box with interactive countdown
+     */
     function showSuccess(name) {
         let secondsLeft = COUNTDOWN_SECONDS;
         successText.textContent = `Thank you, ${name}! Your registration form is complete.`;
@@ -337,6 +434,9 @@
         }, 1000);
     }
 
+    /**
+     * Initiates fake sending timer
+     */
     function startSending(registration) {
         clearMessages();
         setFormBusy(true);
@@ -462,6 +562,9 @@
         confirmButton.focus();
     }
 
+    /**
+     * Marks all fields as touched and displays errors upon invalid submit attempt
+     */
     function showAllErrors() {
         fields.forEach((field) => {
             field.dataset.touched = "true";
@@ -471,8 +574,17 @@
         syncInterests();
         showInterestsError();
         updateSubmitState();
+
+        // Focus first invalid element for accessibility UX
+        const invalidFields = getInvalidFields();
+        if (invalidFields.length > 0) {
+            invalidFields[0].focus();
+        }
     }
 
+    /**
+     * Submit event handler
+     */
     function handleSubmit(event) {
         event.preventDefault();
         syncInterests();
@@ -488,9 +600,9 @@
         clearForm();
     }
 
+    // Single Form-Level Input Delegation Listener
     form.addEventListener("input", handleUnifiedFormInput);
     form.addEventListener("blur", handleFieldBlur, true);
-    interestsGroup.addEventListener("input", handleUnifiedFormInput);
     selectedList.addEventListener("click", handleChipClick);
     form.addEventListener("submit", handleSubmit);
     resetButton.addEventListener("click", handleReset);

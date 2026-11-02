@@ -30,36 +30,36 @@
 
                     <div class="field">
                         <label for="full-name">Full name *</label>
-                        <input type="text" id="full-name" name="full_name" placeholder="Enter your full name" autocomplete="name" minlength="3" maxlength="50" pattern="[A-Za-z ]+" data-label="Full name" data-pattern-message="Use letters and spaces only." required>
-                        <p class="field-error" aria-live="polite"></p>
+                        <input type="text" id="full-name" name="full_name" placeholder="Enter your full name" autocomplete="name" minlength="3" maxlength="50" pattern="[A-Za-z ]+" data-label="Full name" data-pattern-message="Use letters and spaces only." aria-describedby="full-name-error" required>
+                        <p class="field-error" id="full-name-error" aria-live="polite"></p>
                     </div>
 
                     <div class="field">
                         <label for="email-address">Email address *</label>
-                        <input type="email" id="email-address" name="email_address" placeholder="example@gmail.com" autocomplete="email" data-label="Email address" required>
-                        <p class="field-error" aria-live="polite"></p>
+                        <input type="email" id="email-address" name="email_address" placeholder="example@gmail.com" autocomplete="email" data-label="Email address" aria-describedby="email-address-error" required>
+                        <p class="field-error" id="email-address-error" aria-live="polite"></p>
                     </div>
 
                     <div class="field">
                         <label for="phone-number">Phone number (optional)</label>
-                        <input type="tel" id="phone-number" name="phone_number" placeholder="03001234567" autocomplete="tel" maxlength="11" pattern="[0-9]{11}" data-label="Phone number" data-pattern-message="Enter exactly 11 digits, for example 03001234567.">
-                        <p class="field-error" aria-live="polite"></p>
+                        <input type="tel" id="phone-number" name="phone_number" placeholder="03001234567" autocomplete="tel" maxlength="11" pattern="[0-9]{11}" data-label="Phone number" data-pattern-message="Enter exactly 11 digits, for example 03001234567." aria-describedby="phone-number-error">
+                        <p class="field-error" id="phone-number-error" aria-live="polite"></p>
                     </div>
 
                     <div class="field">
                         <label for="password">Password *</label>
-                        <input type="password" id="password" name="password" placeholder="Create a password" autocomplete="new-password" minlength="8" maxlength="30" pattern="(?=.*[A-Za-z])(?=.*[0-9]).*" data-label="Password" data-pattern-message="Use at least one letter and one number." required>
+                        <input type="password" id="password" name="password" placeholder="Create a password" autocomplete="new-password" minlength="8" maxlength="30" pattern="(?=.*[A-Za-z])(?=.*[0-9]).*" data-label="Password" data-pattern-message="Use at least one letter and one number." aria-describedby="password-error" required>
                         <div class="strength">
                             <meter id="strength-meter" min="0" max="5" low="2" high="4" optimum="5" value="0">0 out of 5</meter>
                             <span id="strength-text" aria-live="polite"></span>
                         </div>
-                        <p class="field-error" aria-live="polite"></p>
+                        <p class="field-error" id="password-error" aria-live="polite"></p>
                     </div>
 
                     <div class="field">
                         <label for="confirm-password">Confirm password *</label>
-                        <input type="password" id="confirm-password" name="confirm_password" placeholder="Type the password again" autocomplete="new-password" data-label="Confirm password" required>
-                        <p class="field-error" aria-live="polite"></p>
+                        <input type="password" id="confirm-password" name="confirm_password" placeholder="Type the password again" autocomplete="new-password" data-label="Confirm password" aria-describedby="confirm-password-error" required>
+                        <p class="field-error" id="confirm-password-error" aria-live="polite"></p>
                     </div>
                 </fieldset>
 
@@ -68,20 +68,20 @@
 
                     <div class="field">
                         <label for="applied-position">Position *</label>
-                        <select id="applied-position" name="applied_position" data-label="Position" required>
+                        <select id="applied-position" name="applied_position" data-label="Position" aria-describedby="applied-position-error" required>
                             <option value="" selected>-- Select a position --</option>
                             <option value="web-development">Web Development Intern</option>
                             <option value="software-testing">Software Testing Intern</option>
                             <option value="devops">DevOps Intern</option>
                             <option value="data-analysis">Data Analysis Intern</option>
                         </select>
-                        <p class="field-error" aria-live="polite"></p>
+                        <p class="field-error" id="applied-position-error" aria-live="polite"></p>
                     </div>
 
                     <div class="field">
                         <label for="start-date">Available start date *</label>
-                        <input type="date" id="start-date" name="start_date" min="2026-11-16" max="2027-03-31" data-label="Start date" required>
-                        <p class="field-error" aria-live="polite"></p>
+                        <input type="date" id="start-date" name="start_date" min="2026-11-16" max="2027-03-31" data-label="Start date" aria-describedby="start-date-error" required>
+                        <p class="field-error" id="start-date-error" aria-live="polite"></p>
                     </div>
                 </fieldset>
 
@@ -135,22 +135,22 @@
 
                     <div class="field">
                         <label for="about-text">Why do you want to join? *</label>
-                        <textarea id="about-text" name="about_text" rows="5" cols="40" placeholder="Write at least 20 characters" minlength="20" maxlength="200" data-label="This answer" required></textarea>
+                        <textarea id="about-text" name="about_text" rows="5" cols="40" placeholder="Write at least 20 characters" minlength="20" maxlength="200" data-label="This answer" aria-describedby="about-text-error" required></textarea>
                         <p class="counter" id="about-counter" aria-live="polite"></p>
-                        <p class="field-error" aria-live="polite"></p>
+                        <p class="field-error" id="about-text-error" aria-live="polite"></p>
                     </div>
 
                     <div class="field field--check">
-                        <input type="checkbox" id="terms-accepted" name="terms" value="accepted" data-label="Confirmation" data-required-message="Tick the box to confirm your answers." required>
+                        <input type="checkbox" id="terms-accepted" name="terms" value="accepted" data-label="Confirmation" data-required-message="Tick the box to confirm your answers." aria-describedby="terms-accepted-error" required>
                         <label for="terms-accepted">I confirm that my answers are correct *</label>
-                        <p class="field-error" aria-live="polite"></p>
+                        <p class="field-error" id="terms-accepted-error" aria-live="polite"></p>
                     </div>
                 </fieldset>
 
                 <p class="form-status" id="form-status" aria-live="polite"></p>
 
                 <div class="button-row">
-                    <button class="button" type="submit" id="submit-button" disabled>Submit registration</button>
+                    <button class="button" type="submit" id="submit-button">Submit registration</button>
                     <button class="button button--secondary" type="button" id="reset-button">Reset form</button>
                 </div>
             </form>

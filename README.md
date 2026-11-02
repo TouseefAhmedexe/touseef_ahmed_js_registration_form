@@ -8,16 +8,17 @@ JavaScript. Task 12 of my Bloomrix internship. No jQuery is used.
 - style.css - all the styling
 - app.js - all the JavaScript
 
-## Architectural & Accessibility Improvements
-- **Constraint Validation API & `novalidate`**: Gated form with `novalidate` to ensure custom UI messaging (`showAllErrors()`) serves as the single source of truth without being preempted by native browser bubbles.
-- **Whitespace Sanitization**: Enhanced validation checks to ensure whitespace-only strings fail requirement rules cleanly.
-- **Encapsulation**: Wrapped script logic in an IIFE to eliminate module-level global variable leaks.
-- **ARIA Accessibility**: 
-  - Integrated `aria-live="polite"` on message containers and status elements.
-  - Implemented full WAI-ARIA Tab Pattern (`role="tablist"`, `role="tab"`, `role="tabpanel"`, `aria-selected`, `aria-controls`, roving `tabindex`).
-  - Implemented accessible modal with `role="dialog"`, `aria-modal="true"`, and `aria-labelledby`.
-- **Date Formatting**: Formatted raw ISO date strings via `Intl.DateTimeFormat` before presenting details in the confirmation modal.
-- **Form Element State Restoration**: Improved form disable/enable logic to track and restore only specific controls that were active prior to processing.
+## Key Fixes & Architecture (Task 12 Optimization)
+- **Whitespace Validation & Custom Validity Lifecycles**: `validateWhitespaceOnly()` explicitly resets `setCustomValidity("")` before running checks to prevent sticky custom errors.
+- **Form Reset Cleanup**: `clearForm()` runs an explicit loop that clears `setCustomValidity("")` across all controls independently of browser-specific `form.reset()` behaviors.
+- **Event Listener Efficiency**: Consolidated input handling to a single form-level delegation listener (`form.addEventListener("input", handleUnifiedFormInput)`), removing redundant element-level listeners.
+- **Accessible Form Gating**: The submit button remains enabled to allow native `Enter` submission. If submitted with errors, `showAllErrors()` highlights invalid fields and shifts keyboard focus directly to the first invalid control.
+- **ARIA & Focus Accessibility**:
+  - Dynamically updates `aria-invalid="true"/"false"` on input controls.
+  - Linked all controls to error text using `aria-describedby` matching `.field-error` element IDs.
+  - Full WAI-ARIA tab pattern (`role="tablist"`, `role="tab"`, `role="tabpanel"`, `aria-selected`, `aria-controls`, roving `tabindex`).
+  - Dynamic confirmation modal with `role="dialog"`, `aria-modal="true"`, and `aria-labelledby`.
+  - Automated focus restoration to the form input when the success countdown expires.
 
 ## DOM and Event Topics Used
 - `getElementById`, `querySelector`, `querySelectorAll`, `closest`, `matches`
