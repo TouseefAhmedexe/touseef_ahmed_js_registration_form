@@ -510,3 +510,11 @@ function handleSubmit(event) {
 form.addEventListener("submit", handleSubmit);
 
 
+function handleReset() {
+    clearMessages();
+    clearForm();
+}
+
+resetButton.addEventListener("click", handleReset);
+
+
