@@ -101,3 +101,131 @@ main {
     padding-bottom: var(--space-sm);
 }
 
+
+fieldset {
+    border: 2px solid var(--color-primary);
+    border-radius: var(--radius);
+    margin: 0 0 var(--space-lg);
+    min-inline-size: 0;
+    padding: var(--space-md) var(--space-lg) var(--space-lg);
+}
+
+fieldset.group--invalid {
+    border-color: var(--color-error);
+}
+
+legend {
+    color: var(--color-primary);
+    font-size: 1.1rem;
+    font-weight: bold;
+    padding: 0 var(--space-sm);
+}
+
+.field {
+    display: grid;
+    gap: 0.25rem;
+    margin-bottom: var(--space-md);
+}
+
+label {
+    font-weight: bold;
+}
+
+:is(input:not([type="checkbox"]), select, textarea) {
+    background-color: var(--color-surface);
+    border: 2px solid var(--color-input-border);
+    border-radius: 6px;
+    color: var(--color-text);
+    font: inherit;
+    padding: 0.6em 0.8em;
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+    width: 100%;
+}
+
+textarea {
+    resize: vertical;
+}
+
+:is(input:not([type="checkbox"]), select, textarea):hover {
+    border-color: var(--color-primary);
+}
+
+:is(input, select, textarea):disabled {
+    background-color: #e9edf3;
+    color: var(--color-muted);
+    cursor: not-allowed;
+}
+
+:is(input, select, textarea, button):focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 3px;
+}
+
+::placeholder {
+    color: var(--color-muted);
+    font-style: italic;
+}
+
+.field.field--invalid :is(input, select, textarea) {
+    background-color: #fff5f4;
+    border-color: var(--color-error);
+}
+
+.field.field--valid :is(input, select, textarea) {
+    border-color: var(--color-success);
+}
+
+.field--valid > label::after {
+    color: var(--color-success);
+    content: " \2713";
+}
+
+.field-error {
+    color: var(--color-error);
+    font-size: 0.9rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+.field-error:empty {
+    display: none;
+}
+
+.field-error::before {
+    content: "\26A0  ";
+}
+
+.field--check {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+}
+
+.field--check label,
+.check-option label {
+    font-weight: normal;
+}
+
+.field--check .field-error {
+    flex-basis: 100%;
+}
+
+input[type="checkbox"] {
+    height: 1.25rem;
+    width: 1.25rem;
+}
+
+.check-grid {
+    display: grid;
+    gap: var(--space-sm);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+    margin-bottom: var(--space-md);
+}
+
+.check-option {
+    align-items: center;
+    display: flex;
+    gap: var(--space-sm);
+}
+
