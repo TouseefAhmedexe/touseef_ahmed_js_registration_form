@@ -254,4 +254,50 @@ interestsGroup.addEventListener("input", handleInterestsInput);
 selectedList.addEventListener("click", handleChipClick);
 
 
+function setupTabs(tabs) {
+    const tabList = tabs.querySelector(".tab-list");
+    const tabButtons = [...tabList.children];
+    const panels = tabs.querySelectorAll("[data-panel]");
+
+    function selectTab(name) {
+        tabButtons.forEach((button) => {
+            button.classList.toggle("tab--active", button.dataset.tab === name);
+        });
+        panels.forEach((panel) => {
+            panel.hidden = panel.dataset.panel !== name;
+        });
+    }
+
+    tabList.addEventListener("click", (event) => {
+        const tab = event.target.closest("[data-tab]");
+
+        if (tab !== null) {
+            selectTab(tab.dataset.tab);
+        }
+    });
+
+    tabList.addEventListener("keydown", (event) => {
+        const tab = event.target.closest("[data-tab]");
+        let nextTab = null;
+
+        if (tab === null) {
+            return;
+        }
+
+        if (event.key === "ArrowRight") {
+            nextTab = tab.nextElementSibling ?? tabList.firstElementChild;
+        } else if (event.key === "ArrowLeft") {
+            nextTab = tab.previousElementSibling ?? tabList.lastElementChild;
+        }
+
+        if (nextTab !== null) {
+            event.preventDefault();
+            nextTab.focus();
+            selectTab(nextTab.dataset.tab);
+        }
+    });
+}
+
+document.querySelectorAll(".tabs").forEach(setupTabs);
+
 
