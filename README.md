@@ -31,4 +31,4 @@ JavaScript. Task 12 of my Bloomrix internship. No jQuery is used.
 - Focus handling with `focus()` and `document.activeElement`
 
 ## How to Run
-Open index.html with Live Server in Visual Studio Code or in any modern web browser.
+Open index.html with Live Server in Visual Studio Code or in any modern web browser
