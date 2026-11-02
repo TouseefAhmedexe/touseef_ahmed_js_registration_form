@@ -376,3 +376,137 @@ function startSending(registration) {
 }
 
 
+const positionSelect = document.getElementById("applied-position");
+
+let activeModal = null;
+let lastFocusedElement = null;
+
+function makeElement(tag, className, text = "") {
+    const element = document.createElement(tag);
+
+    element.className = className;
+    element.textContent = text;
+    return element;
+}
+
+function readRegistration() {
+    const data = new FormData(form);
+
+    return {
+        name: data.get("full_name").trim(),
+        email: data.get("email_address").trim(),
+        position: positionSelect.options[positionSelect.selectedIndex].textContent,
+        startDate: data.get("start_date"),
+        interests: data.getAll("interests")
+    };
+}
+
+function closeModal() {
+    if (activeModal === null) {
+        return;
+    }
+
+    document.removeEventListener("keydown", handleModalKeydown);
+    document.body.classList.remove("modal-open");
+    activeModal.remove();
+    activeModal = null;
+    lastFocusedElement.focus();
+}
+
+function handleModalKeydown(event) {
+    if (event.key === "Escape") {
+        closeModal();
+        return;
+    }
+
+    if (event.key !== "Tab") {
+        return;
+    }
+
+    const buttons = activeModal.querySelectorAll("button");
+    const firstButton = buttons[0];
+    const lastButton = buttons[buttons.length - 1];
+
+    if (!activeModal.contains(document.activeElement)) {
+        event.preventDefault();
+        firstButton.focus();
+    } else if (event.shiftKey && document.activeElement === firstButton) {
+        event.preventDefault();
+        lastButton.focus();
+    } else if (!event.shiftKey && document.activeElement === lastButton) {
+        event.preventDefault();
+        firstButton.focus();
+    }
+}
+
+function openModal(registration) {
+    const backdrop = makeElement("div", "modal-backdrop");
+    const modal = makeElement("div", "modal");
+    const details = makeElement("ul", "modal-list");
+    const actions = makeElement("div", "modal-actions");
+    const confirmButton = makeElement("button", "button", "Yes, register me");
+    const cancelButton = makeElement("button", "button button--secondary", "Go back");
+    const lines = [
+        `Name: ${registration.name}`,
+        `Email: ${registration.email}`,
+        `Position: ${registration.position}`,
+        `Start date: ${registration.startDate}`,
+        `Interests: ${registration.interests.join(", ")}`
+    ];
+
+    lines.forEach((line) => details.append(makeElement("li", "", line)));
+
+    confirmButton.type = "button";
+    cancelButton.type = "button";
+    actions.append(confirmButton, cancelButton);
+    modal.append(
+        makeElement("h2", "", "Confirm your registration"),
+        makeElement("p", "", "Check your details before you confirm."),
+        details,
+        actions
+    );
+    backdrop.append(modal);
+
+    confirmButton.addEventListener("click", () => {
+        closeModal();
+        startSending(registration);
+    });
+    cancelButton.addEventListener("click", closeModal);
+    backdrop.addEventListener("click", (event) => {
+        if (event.target === event.currentTarget) {
+            closeModal();
+        }
+    });
+
+    lastFocusedElement = document.activeElement;
+    activeModal = backdrop;
+    document.addEventListener("keydown", handleModalKeydown);
+    document.body.classList.add("modal-open");
+    document.body.append(backdrop);
+    confirmButton.focus();
+}
+
+function showAllErrors() {
+    fields.forEach((field) => {
+        field.dataset.touched = "true";
+        validateField(field);
+    });
+
+    handleInterestsInput();
+    updateSubmitState();
+}
+
+function handleSubmit(event) {
+    event.preventDefault();
+
+    if (!form.checkValidity()) {
+        showAllErrors();
+        return;
+    }
+
+    openModal(readRegistration());
+}
+
+form.addEventListener("submit", handleSubmit);
+
+
