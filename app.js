@@ -301,3 +301,78 @@ function setupTabs(tabs) {
 document.querySelectorAll(".tabs").forEach(setupTabs);
 
 
+const successBox = document.getElementById("success-box");
+const successText = document.getElementById("success-text");
+const successCountdown = document.getElementById("success-countdown");
+
+let sendTimer = null;
+let countdownTimer = null;
+
+function setFormBusy(isBusy) {
+    [...form.elements].forEach((element) => {
+        element.disabled = isBusy;
+    });
+}
+
+function clearMessages() {
+    window.clearTimeout(sendTimer);
+    window.clearInterval(countdownTimer);
+    successBox.hidden = true;
+    successText.textContent = "";
+    successCountdown.textContent = "";
+}
+
+function clearForm() {
+    form.reset();
+
+    fields.forEach((field) => {
+        const wrapper = field.closest(".field");
+
+        field.removeAttribute("data-touched");
+        wrapper.classList.remove("field--invalid", "field--valid");
+        wrapper.querySelector(".field-error").textContent = "";
+    });
+
+    interestsGroup.removeAttribute("data-touched");
+    interestsGroup.classList.remove("group--invalid");
+    interestsError.textContent = "";
+
+    refreshAll();
+}
+
+function showSuccess(name) {
+    let secondsLeft = 6;
+
+    successText.textContent = `Thank you, ${name}! Your registration form is complete.`;
+    successCountdown.textContent = `This message closes in ${pluralize(secondsLeft, "second")}.`;
+    successBox.hidden = false;
+    successBox.focus();
+
+    countdownTimer = window.setInterval(() => {
+        secondsLeft -= 1;
+
+        if (secondsLeft <= 0) {
+            clearMessages();
+            return;
+        }
+
+        successCountdown.textContent = `This message closes in ${pluralize(secondsLeft, "second")}.`;
+    }, 1000);
+}
+
+function finishSending(registration) {
+    setFormBusy(false);
+    clearForm();
+    showSuccess(registration.name);
+}
+
+function startSending(registration) {
+    clearMessages();
+    setFormBusy(true);
+    formStatus.className = "form-status form-status--loading";
+    formStatus.textContent = "Processing your registration...";
+
+    sendTimer = window.setTimeout(() => finishSending(registration), 1500);
+}
+
+
